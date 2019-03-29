@@ -30,7 +30,13 @@ class dkMARC{
 	private $lines;
 	private $number;
 	private $query;
-	//private $MARCarray;
+
+    const SUBFIELD_INDICATOR = "\x1F";
+    const END_OF_FIELD = "\x1E";
+    const END_OF_RECORD = "\x1D";
+    #const END_OF_RECORD = "300";
+    const DIRECTORY_ENTRY_LEN = 12;
+    const LEADER_LEN = 24;
 	
 	public function __construct(){
 		/**
@@ -39,17 +45,26 @@ class dkMARC{
 		 * function.  The array is $lines and it is a private variable
 		 * 
 		 **/
-		$numargs = func_num_args();
-		if($numargs > 0){	
+
+		if(func_num_args() > 0){	
 			$this->raw = func_get_arg(0);	
-			$this->number = func_get_arg(1);	
-			$this->query = func_get_arg(2);	
+		}else{
+			$this->raw = 'NO ARGUEMENTS';
 		}
 		$this->lines = explode("\n", $this->raw);  
-		//$this->MARCarray = MARC2Array();
 	}
+
+	public function breakMARCRecords(){
+		$records = explode(self::END_OF_RECORD, $this->raw);
+		return $records;
+	}
+	public function breakMARCRecord($rawRecord){
+		$records = explode(self::END_OF_FIELD, str_replace(self::SUBFIELD_INDICATOR, '$', $rawRecord));
+		return $records;
+	}
+
 	public function showRawMARC(){
-		return($this->raw);
+		print($this->raw);
 	}
 
 	public function MARC2Array(){
@@ -79,10 +94,10 @@ class dkMARC{
 	        	$returnarray[1] =  explode('.', preg_replace('/(.{1})(.{1})(.{1})(.{1})/', '${1}.${2}.${3}.${4}', $linearray[1]));
 	        	$returnarray[2] = preg_split('/(\$[a-z]{1})/', $linearray[2], null, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
 	      	}else{
-	        	#print "----------------------------------------------------------------\n";
-			#print "<hr/><pre>";
-	        	#print_r($linearray);	
-			#print "</pre>";
+	        print "----------------------------------------------------------------\n";
+			print "<hr/><pre>";
+	        print_r($linearray);	
+			print "</pre>";
 	      		$returnarray[1] = array('notfunny');
 	      		$returnarray[2] = @array('nosubfields', $linearray[2]); // '@' to supress inevitable offset errors.
 	        	#print "----------------------------------------------------------------\n";
@@ -93,11 +108,11 @@ class dkMARC{
         }
         return $final_array;
 	}
-	public function iterate(){
-		#print_r($this->MARC2Array());
-		for($i = 0; $i < count($this->MARC2Array); $i++){
-			print " " . $i . " <br/>\n";
-		}
+	public function iterate($array){
+		//for($i = 0; $i < count($array); $i++){
+			print count($array);
+		//	print " " . $array[$i] . " <br/>\n";
+		//}
 	}
 
 	
