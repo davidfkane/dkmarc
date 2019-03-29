@@ -1,4 +1,4 @@
-#dkmarc#
+# dkmarc
 
 This class is designed to encapsulate a MARC record, in a structured way
 it is a base class to be extended by other classes.
@@ -22,8 +22,7 @@ David Kane, 2010.
 dkane@wit.ie
 http://library.wit.ie/
 
-##Usage##
-
+## Usage
 
 
 
