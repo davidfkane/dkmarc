@@ -164,7 +164,8 @@ class dkMARC{
 				$ret = $MARC[$i][2][1];
 				$pat = array('/.*([0-9]{13}).*/', '/.*([0-9]{9}[0-9xX]{1}).*/i', '/(.*)\([^\)]*\)(.*)/', '/[a-z]* :/');
 				$repl = array('$1','$1','$1$2','');
-				$ret = preg_replace($pat,'$1',$ret);
+                               // Apply each cleanup pattern in sequence to extract a clean ISBN
+                               $ret = preg_replace($pat, $repl, $ret);
 				if(!preg_match('/^[0-9]{9}/',$ret)){
 					$ret = 'null';
 				}
